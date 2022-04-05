@@ -81,6 +81,25 @@
 
 use std::{ffi::OsString, path::PathBuf};
 
+/// A [`clap::ArgEnum`] for available shell completions.
+/// # Examples
+/// ```no_run
+/// use clap::{Parser, Subcommand};
+///
+/// #[derive(Parser)]
+/// struct Cli {
+///     #[clap(subcommand)]
+///     command: Commands,
+/// }
+///
+/// #[derive(Subcommand)]
+/// enum Commands {
+///     Completion {
+///         #[clap(arg_enum)]
+///         shell: clap_complete_command::Shell,
+///     },
+/// }
+/// ```
 #[derive(clap::ArgEnum, Clone)]
 #[non_exhaustive]
 pub enum Shell {
