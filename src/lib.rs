@@ -197,6 +197,10 @@ mod tests {
         );
     }
     #[test]
+    fn check_casing_fig() {
+        assert_eq!(Shell::Fig.to_possible_value().unwrap().get_name(), "fig");
+    }
+    #[test]
     fn check_casing_fish() {
         assert_eq!(Shell::Fish.to_possible_value().unwrap().get_name(), "fish");
     }
@@ -210,10 +214,6 @@ mod tests {
     #[test]
     fn check_casing_zsh() {
         assert_eq!(Shell::Zsh.to_possible_value().unwrap().get_name(), "zsh");
-    }
-    #[test]
-    fn check_casing_fig() {
-        assert_eq!(Shell::Fig.to_possible_value().unwrap().get_name(), "fig");
     }
 
     #[test]
