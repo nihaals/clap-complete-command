@@ -91,6 +91,7 @@ pub enum Shell {
     /// Friendly Interactive SHell (fish)
     Fish,
     /// PowerShell
+    #[clap(name = "powershell")]
     PowerShell,
     /// Z SHell (zsh)
     Zsh,
@@ -158,5 +159,42 @@ impl Shell {
         T: Into<OsString>,
     {
         clap_complete::generate_to(self.to_generator(), command, bin_name, out_dir)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use clap::ArgEnum;
+
+    #[test]
+    fn check_casing_bash() {
+        assert_eq!(Shell::Bash.to_possible_value().unwrap().get_name(), "bash");
+    }
+    #[test]
+    fn check_casing_elvish() {
+        assert_eq!(
+            Shell::Elvish.to_possible_value().unwrap().get_name(),
+            "elvish",
+        );
+    }
+    #[test]
+    fn check_casing_fish() {
+        assert_eq!(Shell::Fish.to_possible_value().unwrap().get_name(), "fish");
+    }
+    #[test]
+    fn check_casing_powershell() {
+        assert_eq!(
+            Shell::PowerShell.to_possible_value().unwrap().get_name(),
+            "powershell",
+        );
+    }
+    #[test]
+    fn check_casing_zsh() {
+        assert_eq!(Shell::Zsh.to_possible_value().unwrap().get_name(), "zsh");
+    }
+    #[test]
+    fn check_casing_fig() {
+        assert_eq!(Shell::Fig.to_possible_value().unwrap().get_name(), "fig");
     }
 }
