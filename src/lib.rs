@@ -88,6 +88,8 @@ pub enum Shell {
     Bash,
     /// Elvish shell
     Elvish,
+    /// Fig
+    Fig,
     /// Friendly Interactive SHell (fish)
     Fish,
     /// PowerShell
@@ -95,9 +97,6 @@ pub enum Shell {
     PowerShell,
     /// Z SHell (zsh)
     Zsh,
-
-    /// Fig
-    Fig,
 }
 
 enum Generators {
@@ -196,5 +195,22 @@ mod tests {
     #[test]
     fn check_casing_fig() {
         assert_eq!(Shell::Fig.to_possible_value().unwrap().get_name(), "fig");
+    }
+
+    #[test]
+    fn check_order() {
+        let names = Shell::value_variants()
+            .iter()
+            .map(|shell| shell.to_possible_value().unwrap().get_name())
+            .collect::<Vec<_>>();
+
+        let mut sorted = names.clone();
+        sorted.sort_unstable();
+
+        assert_eq!(names, sorted);
+        assert_eq!(
+            names,
+            vec!["bash", "elvish", "fig", "fish", "powershell", "zsh"],
+        );
     }
 }
