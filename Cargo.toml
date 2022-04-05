@@ -1,0 +1,19 @@
+[package]
+name = "clap_complete_command"
+version = "0.1.0"
+edition = "2021"
+
+description = "Reduces boilerplate for adding a completion command to Clap"
+repository = "https://github.com/nihaals/clap-complete-command"
+license = "MIT"
+keywords = [
+    "clap",
+	"cli",
+	"completion",
+]
+categories = ["command-line-interface"]
+
+[dependencies]
+clap = { version = "3", features = ["derive"] }
+clap_complete = "3"
+clap_complete_fig = "3"
