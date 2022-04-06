@@ -100,7 +100,7 @@ use std::{ffi::OsString, path::PathBuf};
 ///     },
 /// }
 /// ```
-#[derive(clap::ArgEnum, Clone)]
+#[derive(clap::ArgEnum, Clone, Copy)]
 #[non_exhaustive]
 pub enum Shell {
     /// Bourne Again SHell (bash)
@@ -146,25 +146,26 @@ impl clap_complete::Generator for Shell {
 
 impl Shell {
     #[must_use]
-    pub fn to_generator(&self) -> impl clap_complete::Generator {
-        self.clone()
+    #[deprecated(since = "0.2.1", note = "`Shell` now implements `Generator`")]
+    pub fn to_generator(self) -> impl clap_complete::Generator {
+        self
     }
 
     /// See [`clap_complete::generate()`].
     pub fn generate<S>(
-        &self,
+        self,
         command: &mut clap::Command,
         bin_name: S,
         buffer: &mut dyn std::io::Write,
     ) where
         S: Into<String>,
     {
-        clap_complete::generate(self.to_generator(), command, bin_name, buffer)
+        clap_complete::generate(self, command, bin_name, buffer)
     }
 
     /// See [`clap_complete::generate_to()`].
     pub fn generate_to<S, T>(
-        &self,
+        self,
         command: &mut clap::Command,
         bin_name: S,
         out_dir: T,
@@ -173,7 +174,7 @@ impl Shell {
         S: Into<String>,
         T: Into<OsString>,
     {
-        clap_complete::generate_to(self.to_generator(), command, bin_name, out_dir)
+        clap_complete::generate_to(self, command, bin_name, out_dir)
     }
 }
 
