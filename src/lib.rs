@@ -1,5 +1,7 @@
 //! # Examples
 //!
+//! ## Derive
+//!
 //! ```no_run
 //! use clap::{IntoApp, Parser, Subcommand};
 //!
@@ -82,7 +84,11 @@
 use std::{ffi::OsString, path::PathBuf};
 
 /// A [`clap::ArgEnum`] for available shell completions.
+///
 /// # Examples
+///
+/// ## Derive
+///
 /// ```no_run
 /// use clap::{Parser, Subcommand};
 ///
