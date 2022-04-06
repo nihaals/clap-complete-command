@@ -17,7 +17,7 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
-    /// Generate shell completion
+    /// Generate shell completions
     Completion {
         /// The shell to generate the completions for
         #[clap(arg_enum)]
