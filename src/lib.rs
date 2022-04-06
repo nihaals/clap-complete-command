@@ -118,23 +118,28 @@ pub enum Shell {
     Zsh,
 }
 
-enum Generators {
-    Shell(clap_complete::Shell),
-    Fig(clap_complete_fig::Fig),
-}
-
-impl clap_complete::Generator for Generators {
+impl clap_complete::Generator for Shell {
     fn file_name(&self, name: &str) -> String {
         match self {
-            Generators::Shell(shell) => shell.file_name(name),
-            Generators::Fig(fig) => fig.file_name(name),
+            Shell::Bash => clap_complete::Shell::Bash.file_name(name),
+            Shell::Elvish => clap_complete::Shell::Elvish.file_name(name),
+            Shell::Fish => clap_complete::Shell::Fish.file_name(name),
+            Shell::PowerShell => clap_complete::Shell::PowerShell.file_name(name),
+            Shell::Zsh => clap_complete::Shell::Zsh.file_name(name),
+
+            Shell::Fig => clap_complete_fig::Fig.file_name(name),
         }
     }
 
     fn generate(&self, cmd: &clap::Command, buf: &mut dyn std::io::Write) {
         match self {
-            Generators::Shell(shell) => shell.generate(cmd, buf),
-            Generators::Fig(fig) => fig.generate(cmd, buf),
+            Shell::Bash => clap_complete::Shell::Bash.generate(cmd, buf),
+            Shell::Elvish => clap_complete::Shell::Elvish.generate(cmd, buf),
+            Shell::Fish => clap_complete::Shell::Fish.generate(cmd, buf),
+            Shell::PowerShell => clap_complete::Shell::PowerShell.generate(cmd, buf),
+            Shell::Zsh => clap_complete::Shell::Zsh.generate(cmd, buf),
+
+            Shell::Fig => clap_complete_fig::Fig.generate(cmd, buf),
         }
     }
 }
@@ -142,15 +147,7 @@ impl clap_complete::Generator for Generators {
 impl Shell {
     #[must_use]
     pub fn to_generator(&self) -> impl clap_complete::Generator {
-        match self {
-            Self::Bash => Generators::Shell(clap_complete::Shell::Bash),
-            Self::Elvish => Generators::Shell(clap_complete::Shell::Elvish),
-            Self::Fish => Generators::Shell(clap_complete::Shell::Fish),
-            Self::PowerShell => Generators::Shell(clap_complete::Shell::PowerShell),
-            Self::Zsh => Generators::Shell(clap_complete::Shell::Zsh),
-
-            Self::Fig => Generators::Fig(clap_complete_fig::Fig),
-        }
+        self.clone()
     }
 
     /// See [`clap_complete::generate()`].
