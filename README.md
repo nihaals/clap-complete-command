@@ -40,3 +40,7 @@ fn main() {
     }
 }
 ```
+
+## Supported shells
+
+The supported shells can be seen in `clap_complete_command::Shell`.
