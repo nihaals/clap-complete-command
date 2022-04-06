@@ -5,6 +5,7 @@ edition = "2021"
 
 description = "Reduces boilerplate for adding a completion command to Clap"
 repository = "https://github.com/nihaals/clap-complete-command"
+documentation = "https://docs.rs/clap_complete_command"
 license = "MIT"
 keywords = [
     "clap",
