@@ -81,7 +81,7 @@
 #![warn(clippy::wildcard_imports)]
 #![warn(clippy::zero_sized_map_values)]
 
-use std::{ffi::OsString, path::PathBuf};
+use std::{ffi::OsString, path::PathBuf, str::FromStr};
 
 use clap::ArgEnum;
 
@@ -182,6 +182,26 @@ impl Shell {
         T: Into<OsString>,
     {
         clap_complete::generate_to(self, command, bin_name, out_dir)
+    }
+
+    pub fn possible_values() -> impl Iterator<Item = clap::PossibleValue<'static>> {
+        Self::value_variants()
+            .iter()
+            .filter_map(ArgEnum::to_possible_value)
+    }
+}
+
+// Used for builder API
+impl FromStr for Shell {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        for variant in Self::value_variants() {
+            if variant.to_possible_value().unwrap().matches(s, false) {
+                return Ok(*variant);
+            }
+        }
+        Err(format!("Invalid variant: {}", s))
     }
 }
 
