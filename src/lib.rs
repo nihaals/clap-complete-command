@@ -132,7 +132,7 @@ use clap::ArgEnum;
 ///
 /// ## Builder
 ///
-/// ```no_run
+/// ```
 /// use clap::{Arg, Command};
 ///
 /// fn build_cli() -> Command<'static> {
@@ -225,6 +225,20 @@ impl Shell {
         clap_complete::generate_to(self, command, bin_name, out_dir)
     }
 
+    /// # Examples
+    ///
+    /// ```
+    /// use clap::{Arg, Command};
+    ///
+    /// Command::new(env!("CARGO_PKG_NAME"))
+    ///     .arg(
+    ///         Arg::new("completion")
+    ///             .help("Generate shell completions")
+    ///             .possible_values(clap_complete_command::Shell::possible_values()),
+    ///     )
+    ///     .get_matches()
+    /// # ;
+    /// ```
     pub fn possible_values() -> impl Iterator<Item = clap::PossibleValue<'static>> {
         Self::value_variants()
             .iter()
