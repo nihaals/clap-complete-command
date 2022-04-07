@@ -26,11 +26,7 @@
 //! match cli.command {
 //!     // e.g. `$ cli completion bash`
 //!     Commands::Completion { shell } => {
-//!         shell.generate(
-//!             &mut Cli::command(),
-//!             env!("CARGO_PKG_NAME"),
-//!             &mut std::io::stdout(),
-//!         );
+//!         shell.generate(&mut Cli::command(), &mut std::io::stdout());
 //!     }
 //! }
 //! ```
@@ -53,7 +49,7 @@
 //! // e.g. `$ cli bash`
 //! if let Ok(shell) = matches.value_of_t::<clap_complete_command::Shell>("completion") {
 //!     let mut command = build_cli();
-//!     shell.generate(&mut command, env!("CARGO_PKG_NAME"), &mut std::io::stdout());
+//!     shell.generate(&mut command, &mut std::io::stdout());
 //! }
 //! ```
 
@@ -201,28 +197,33 @@ impl Shell {
     }
 
     /// See [`clap_complete::generate()`].
-    pub fn generate<S>(
-        self,
-        command: &mut clap::Command,
-        bin_name: S,
-        buffer: &mut dyn std::io::Write,
-    ) where
-        S: Into<String>,
-    {
+    ///
+    /// The `command`'s bin name is used as the completion's bin name.
+    /// If the `command`'s bin name is not set, it will be set to the `command`'s name.
+    pub fn generate(self, command: &mut clap::Command, buffer: &mut dyn std::io::Write) {
+        let bin_name = command
+            .get_bin_name()
+            .unwrap_or_else(|| command.get_name())
+            .to_owned();
         clap_complete::generate(self, command, bin_name, buffer)
     }
 
     /// See [`clap_complete::generate_to()`].
-    pub fn generate_to<S, T>(
+    ///
+    /// The `command`'s bin name is used as the completion's bin name.
+    /// If the `command`'s bin name is not set, it will be set to the `command`'s name.
+    pub fn generate_to<S>(
         self,
         command: &mut clap::Command,
-        bin_name: S,
-        out_dir: T,
+        out_dir: S,
     ) -> Result<PathBuf, std::io::Error>
     where
-        S: Into<String>,
-        T: Into<OsString>,
+        S: Into<OsString>,
     {
+        let bin_name = command
+            .get_bin_name()
+            .unwrap_or_else(|| command.get_name())
+            .to_owned();
         clap_complete::generate_to(self, command, bin_name, out_dir)
     }
 

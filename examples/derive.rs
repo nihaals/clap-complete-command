@@ -21,11 +21,7 @@ fn main() {
 
     match cli.command {
         Commands::Completion { shell } => {
-            shell.generate(
-                &mut Cli::command(),
-                env!("CARGO_PKG_NAME"),
-                &mut std::io::stdout(),
-            );
+            shell.generate(&mut Cli::command(), &mut std::io::stdout());
         }
     }
 }

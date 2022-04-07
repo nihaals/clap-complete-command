@@ -33,11 +33,7 @@ fn main() {
     match cli.command {
         // e.g. `$ cli completion bash`
         Commands::Completion { shell } => {
-            shell.generate(
-                &mut Cli::command(),
-                env!("CARGO_PKG_NAME"),
-                &mut std::io::stdout(),
-            );
+            shell.generate(&mut Cli::command(), &mut std::io::stdout());
         }
     }
 }
@@ -62,7 +58,7 @@ fn main() {
     // e.g. `$ cli bash`
     if let Ok(shell) = matches.value_of_t::<clap_complete_command::Shell>("completion") {
         let mut command = build_cli();
-        shell.generate(&mut command, env!("CARGO_PKG_NAME"), &mut std::io::stdout());
+        shell.generate(&mut command, &mut std::io::stdout());
     }
 }
 ```
