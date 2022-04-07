@@ -50,6 +50,7 @@
 //!
 //! let matches = build_cli().get_matches();
 //!
+//! // e.g. `$ cli bash`
 //! if let Ok(shell) = matches.value_of_t::<clap_complete_command::Shell>("completion") {
 //!     let mut command = build_cli();
 //!     shell.generate(&mut command, env!("CARGO_PKG_NAME"), &mut std::io::stdout());
