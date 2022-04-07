@@ -83,6 +83,8 @@
 
 use std::{ffi::OsString, path::PathBuf};
 
+use clap::ArgEnum;
+
 /// A [`clap::ArgEnum`] for available shell completions.
 ///
 /// # Examples
@@ -106,7 +108,7 @@ use std::{ffi::OsString, path::PathBuf};
 ///     },
 /// }
 /// ```
-#[derive(clap::ArgEnum, Clone, Copy)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 pub enum Shell {
     /// Bourne Again SHell (bash)
@@ -118,7 +120,6 @@ pub enum Shell {
     /// Friendly Interactive SHell (fish)
     Fish,
     /// PowerShell
-    #[clap(name = "powershell")]
     PowerShell,
     /// Z SHell (zsh)
     Zsh,
@@ -181,6 +182,32 @@ impl Shell {
         T: Into<OsString>,
     {
         clap_complete::generate_to(self, command, bin_name, out_dir)
+    }
+}
+
+// Used for derive API
+// Hand-rolled to avoid depending on Clap's `derive` feature
+impl ArgEnum for Shell {
+    fn value_variants<'a>() -> &'a [Self] {
+        &[
+            Self::Bash,
+            Self::Elvish,
+            Self::Fig,
+            Self::Fish,
+            Self::PowerShell,
+            Self::Zsh,
+        ]
+    }
+
+    fn to_possible_value<'a>(&self) -> Option<clap::PossibleValue<'a>> {
+        Some(match self {
+            Self::Bash => clap::PossibleValue::new("bash"),
+            Self::Elvish => clap::PossibleValue::new("elvish"),
+            Self::Fig => clap::PossibleValue::new("fig"),
+            Self::Fish => clap::PossibleValue::new("fish"),
+            Self::PowerShell => clap::PossibleValue::new("powershell"),
+            Self::Zsh => clap::PossibleValue::new("zsh"),
+        })
     }
 }
 
