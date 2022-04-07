@@ -4,7 +4,9 @@
 
 Reduces boilerplate for adding a completion command to Clap
 
-## Example
+## Examples
+
+### Derive
 
 ```rust
 use clap::{IntoApp, Parser, Subcommand};
@@ -37,6 +39,30 @@ fn main() {
                 &mut std::io::stdout(),
             );
         }
+    }
+}
+```
+
+### Builder
+
+```rs
+use clap::{Arg, Command};
+
+fn build_cli() -> Command<'static> {
+    Command::new(env!("CARGO_PKG_NAME")).arg(
+        Arg::new("completion")
+            .help("Generate shell completions")
+            .possible_values(clap_complete_command::Shell::possible_values()),
+    )
+}
+
+fn main() {
+    let matches = build_cli().get_matches();
+
+    // e.g. `$ cli bash`
+    if let Ok(shell) = matches.value_of_t::<clap_complete_command::Shell>("completion") {
+        let mut command = build_cli();
+        shell.generate(&mut command, env!("CARGO_PKG_NAME"), &mut std::io::stdout());
     }
 }
 ```

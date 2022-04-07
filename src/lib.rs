@@ -34,6 +34,27 @@
 //!     }
 //! }
 //! ```
+//!
+//! ## Builder
+//!
+//! ```no_run
+//! use clap::{Arg, Command};
+//!
+//! fn build_cli() -> Command<'static> {
+//!     Command::new(env!("CARGO_PKG_NAME")).arg(
+//!         Arg::new("completion")
+//!             .help("Generate shell completions")
+//!             .possible_values(clap_complete_command::Shell::possible_values()),
+//!     )
+//! }
+//!
+//! let matches = build_cli().get_matches();
+//!
+//! if let Ok(shell) = matches.value_of_t::<clap_complete_command::Shell>("completion") {
+//!     let mut command = build_cli();
+//!     shell.generate(&mut command, env!("CARGO_PKG_NAME"), &mut std::io::stdout());
+//! }
+//! ```
 
 #![warn(clippy::cast_lossless)]
 #![warn(clippy::cast_possible_wrap)]
@@ -106,6 +127,26 @@ use clap::ArgEnum;
 ///         #[clap(arg_enum)]
 ///         shell: clap_complete_command::Shell,
 ///     },
+/// }
+/// ```
+///
+/// ## Builder
+///
+/// ```no_run
+/// use clap::{Arg, Command};
+///
+/// fn build_cli() -> Command<'static> {
+///     Command::new(env!("CARGO_PKG_NAME")).arg(
+///         Arg::new("completion")
+///             .help("Generate shell completions")
+///             .possible_values(clap_complete_command::Shell::possible_values()),
+///     )
+/// }
+///
+/// let matches = build_cli().get_matches();
+///
+/// if let Ok(shell) = matches.value_of_t::<clap_complete_command::Shell>("completion") {
+///     // ...
 /// }
 /// ```
 #[derive(Clone, Copy)]
