@@ -190,12 +190,6 @@ impl clap_complete::Generator for Shell {
 }
 
 impl Shell {
-    #[must_use]
-    #[deprecated(since = "0.2.1", note = "`Shell` now implements `Generator`")]
-    pub fn to_generator(self) -> impl clap_complete::Generator {
-        self
-    }
-
     /// See [`clap_complete::generate()`].
     ///
     /// The `command`'s bin name is used as the completion's bin name.
