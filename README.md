@@ -41,7 +41,7 @@ fn main() {
 
 ### Builder
 
-```rs
+```rust
 use clap::{Arg, Command};
 
 fn build_cli() -> Command<'static> {
