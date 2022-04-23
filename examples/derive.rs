@@ -9,7 +9,7 @@ struct Cli {
 #[derive(Subcommand)]
 enum Commands {
     /// Generate shell completions
-    Completion {
+    Completions {
         /// The shell to generate the completions for
         #[clap(arg_enum)]
         shell: clap_complete_command::Shell,
@@ -20,7 +20,7 @@ fn main() {
     let cli = Cli::parse();
 
     match cli.command {
-        Commands::Completion { shell } => {
+        Commands::Completions { shell } => {
             shell.generate(&mut Cli::command(), &mut std::io::stdout());
         }
     }

@@ -14,7 +14,7 @@
 //! #[derive(Subcommand)]
 //! enum Commands {
 //!     /// Generate shell completions
-//!     Completion {
+//!     Completions {
 //!         /// The shell to generate the completions for
 //!         #[clap(arg_enum)]
 //!         shell: clap_complete_command::Shell,
@@ -25,7 +25,7 @@
 //!
 //! match cli.command {
 //!     // e.g. `$ cli completion bash`
-//!     Commands::Completion { shell } => {
+//!     Commands::Completions { shell } => {
 //!         shell.generate(&mut Cli::command(), &mut std::io::stdout());
 //!     }
 //! }
@@ -38,7 +38,7 @@
 //!
 //! fn build_cli() -> Command<'static> {
 //!     Command::new(env!("CARGO_PKG_NAME")).arg(
-//!         Arg::new("completion")
+//!         Arg::new("completions")
 //!             .help("Generate shell completions")
 //!             .possible_values(clap_complete_command::Shell::possible_values()),
 //!     )
@@ -47,7 +47,7 @@
 //! let matches = build_cli().get_matches();
 //!
 //! // e.g. `$ cli bash`
-//! if let Ok(shell) = matches.value_of_t::<clap_complete_command::Shell>("completion") {
+//! if let Ok(shell) = matches.value_of_t::<clap_complete_command::Shell>("completions") {
 //!     let mut command = build_cli();
 //!     shell.generate(&mut command, &mut std::io::stdout());
 //! }
@@ -120,7 +120,7 @@ use clap::ArgEnum;
 ///
 /// #[derive(Subcommand)]
 /// enum Commands {
-///     Completion {
+///     Completions {
 ///         #[clap(arg_enum)]
 ///         shell: clap_complete_command::Shell,
 ///     },
@@ -134,7 +134,7 @@ use clap::ArgEnum;
 ///
 /// fn build_cli() -> Command<'static> {
 ///     Command::new(env!("CARGO_PKG_NAME")).arg(
-///         Arg::new("completion")
+///         Arg::new("completions")
 ///             .help("Generate shell completions")
 ///             .possible_values(clap_complete_command::Shell::possible_values()),
 ///     )
@@ -142,7 +142,7 @@ use clap::ArgEnum;
 ///
 /// let matches = build_cli().get_matches();
 ///
-/// if let Ok(shell) = matches.value_of_t::<clap_complete_command::Shell>("completion") {
+/// if let Ok(shell) = matches.value_of_t::<clap_complete_command::Shell>("completions") {
 ///     // ...
 /// }
 /// ```
@@ -228,7 +228,7 @@ impl Shell {
     ///
     /// Command::new(env!("CARGO_PKG_NAME"))
     ///     .arg(
-    ///         Arg::new("completion")
+    ///         Arg::new("completions")
     ///             .help("Generate shell completions")
     ///             .possible_values(clap_complete_command::Shell::possible_values()),
     ///     )
