@@ -7,11 +7,7 @@ description = "Reduces boilerplate for adding a completion command to Clap"
 repository = "https://github.com/nihaals/clap-complete-command"
 documentation = "https://docs.rs/clap_complete_command"
 license = "MIT"
-keywords = [
-    "clap",
-    "cli",
-    "completion",
-]
+keywords = ["clap", "cli", "completion"]
 categories = ["command-line-interface"]
 
 [dependencies]
