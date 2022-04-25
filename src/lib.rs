@@ -24,7 +24,7 @@
 //! let cli = Cli::parse();
 //!
 //! match cli.command {
-//!     // e.g. `$ cli completion bash`
+//!     // e.g. `$ cli completions bash`
 //!     Commands::Completions { shell } => {
 //!         shell.generate(&mut Cli::command(), &mut std::io::stdout());
 //!     }
@@ -56,7 +56,7 @@
 //!
 //! match matches.subcommand() {
 //!     Some(("completions", sub_matches)) => {
-//!         // e.g. `$ cli completion bash`
+//!         // e.g. `$ cli completions bash`
 //!         if let Ok(shell) = sub_matches.value_of_t::<clap_complete_command::Shell>("shell") {
 //!             let mut command = build_cli();
 //!             shell.generate(&mut command, &mut std::io::stdout());
