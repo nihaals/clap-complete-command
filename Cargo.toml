@@ -3,7 +3,7 @@ name = "clap_complete_command"
 version = "0.3.2"
 edition = "2021"
 
-description = "Reduces boilerplate for adding a completion command to Clap"
+description = "Reduces boilerplate for adding a shell completion command to Clap"
 repository = "https://github.com/nihaals/clap-complete-command"
 documentation = "https://docs.rs/clap_complete_command"
 license = "MIT"
