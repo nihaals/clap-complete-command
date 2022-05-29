@@ -196,25 +196,25 @@ pub enum Shell {
 impl clap_complete::Generator for Shell {
     fn file_name(&self, name: &str) -> String {
         match self {
-            Shell::Bash => clap_complete::Shell::Bash.file_name(name),
-            Shell::Elvish => clap_complete::Shell::Elvish.file_name(name),
-            Shell::Fish => clap_complete::Shell::Fish.file_name(name),
-            Shell::PowerShell => clap_complete::Shell::PowerShell.file_name(name),
-            Shell::Zsh => clap_complete::Shell::Zsh.file_name(name),
+            Self::Bash => clap_complete::Shell::Bash.file_name(name),
+            Self::Elvish => clap_complete::Shell::Elvish.file_name(name),
+            Self::Fish => clap_complete::Shell::Fish.file_name(name),
+            Self::PowerShell => clap_complete::Shell::PowerShell.file_name(name),
+            Self::Zsh => clap_complete::Shell::Zsh.file_name(name),
 
-            Shell::Fig => clap_complete_fig::Fig.file_name(name),
+            Self::Fig => clap_complete_fig::Fig.file_name(name),
         }
     }
 
     fn generate(&self, cmd: &clap::Command, buf: &mut dyn std::io::Write) {
         match self {
-            Shell::Bash => clap_complete::Shell::Bash.generate(cmd, buf),
-            Shell::Elvish => clap_complete::Shell::Elvish.generate(cmd, buf),
-            Shell::Fish => clap_complete::Shell::Fish.generate(cmd, buf),
-            Shell::PowerShell => clap_complete::Shell::PowerShell.generate(cmd, buf),
-            Shell::Zsh => clap_complete::Shell::Zsh.generate(cmd, buf),
+            Self::Bash => clap_complete::Shell::Bash.generate(cmd, buf),
+            Self::Elvish => clap_complete::Shell::Elvish.generate(cmd, buf),
+            Self::Fish => clap_complete::Shell::Fish.generate(cmd, buf),
+            Self::PowerShell => clap_complete::Shell::PowerShell.generate(cmd, buf),
+            Self::Zsh => clap_complete::Shell::Zsh.generate(cmd, buf),
 
-            Shell::Fig => clap_complete_fig::Fig.generate(cmd, buf),
+            Self::Fig => clap_complete_fig::Fig.generate(cmd, buf),
         }
     }
 }
