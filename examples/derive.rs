@@ -1,4 +1,4 @@
-use clap::{IntoApp, Parser, Subcommand};
+use clap::{CommandFactory, Parser, Subcommand};
 
 #[derive(Parser)]
 struct Cli {
@@ -11,7 +11,7 @@ enum Commands {
     /// Generate shell completions
     Completions {
         /// The shell to generate the completions for
-        #[clap(arg_enum)]
+        #[arg(value_enum)]
         shell: clap_complete_command::Shell,
     },
 }
