@@ -1,6 +1,6 @@
 [package]
 name = "clap_complete_command"
-version = "0.3.4"
+version = "0.4.0"
 edition = "2021"
 
 description = "Reduces boilerplate for adding a shell completion command to Clap"
