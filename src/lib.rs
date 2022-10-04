@@ -116,7 +116,7 @@
 #![warn(clippy::wildcard_imports)]
 #![warn(clippy::zero_sized_map_values)]
 
-use std::{ffi::OsString, path::PathBuf, str::FromStr};
+use std::{ffi::OsString, path::PathBuf};
 
 use clap::ValueEnum;
 
@@ -254,48 +254,8 @@ impl Shell {
             .to_owned();
         clap_complete::generate_to(self, command, bin_name, out_dir)
     }
-
-    /// # Examples
-    ///
-    /// ```no_run
-    /// use clap::{Arg, Command};
-    ///
-    /// Command::new("completions")
-    ///     .about("Generate shell completions")
-    ///     .arg(
-    ///         Arg::new("shell")
-    ///             .value_name("SHELL")
-    ///             .help("The shell to generate the completions for")
-    ///             .required(true)
-    ///             .value_parser(
-    ///                 clap::builder::EnumValueParser::<clap_complete_command::Shell>::new(),
-    ///             ),
-    ///     )
-    ///     .get_matches()
-    /// # ;
-    /// ```
-    pub fn possible_values() -> impl Iterator<Item = clap::builder::PossibleValue> {
-        Self::value_variants()
-            .iter()
-            .filter_map(ValueEnum::to_possible_value)
-    }
 }
 
-// Used for builder API
-impl FromStr for Shell {
-    type Err = String;
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        for variant in Self::value_variants() {
-            if variant.to_possible_value().unwrap().matches(s, false) {
-                return Ok(*variant);
-            }
-        }
-        Err(format!("invalid variant: {}", s))
-    }
-}
-
-// Used for derive API
 // Hand-rolled to avoid depending on Clap's `derive` feature
 impl ValueEnum for Shell {
     fn value_variants<'a>() -> &'a [Self] {
