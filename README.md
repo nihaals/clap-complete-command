@@ -6,7 +6,7 @@ Reduces boilerplate for adding a shell completion command to Clap
 
 ## Compatible clap versions
 
-| `clap` version | `clap-complete-command` version |
+| `clap` version | `clap_complete_command` version |
 | -------------- | ------------------------------- |
 | v3             | v0.1, v0.2, v0.3                |
 | v4             | v0.4                            |
