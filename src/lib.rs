@@ -321,8 +321,7 @@ mod tests {
     fn check_order() {
         let names = Shell::value_variants()
             .iter()
-            .filter_map(Shell::to_possible_value)
-            .map(|p| p.get_name().to_owned())
+            .map(|shell| shell.to_possible_value().unwrap().get_name().to_owned())
             .collect::<Vec<_>>();
 
         let mut sorted = names.clone();
