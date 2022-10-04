@@ -2,7 +2,7 @@ use clap::{CommandFactory, Parser, Subcommand};
 
 #[derive(Parser)]
 struct Cli {
-    #[clap(subcommand)]
+    #[command(subcommand)]
     command: Commands,
 }
 
