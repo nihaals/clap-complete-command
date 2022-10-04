@@ -9,11 +9,11 @@ Reduces boilerplate for adding a shell completion command to Clap
 ### Derive
 
 ```rust
-use clap::{IntoApp, Parser, Subcommand};
+use clap::{CommandFactory, Parser, Subcommand};
 
 #[derive(Parser)]
 struct Cli {
-    #[clap(subcommand)]
+    #[command(subcommand)]
     command: Commands,
 }
 
@@ -22,7 +22,7 @@ enum Commands {
     /// Generate shell completions
     Completions {
         /// The shell to generate the completions for
-        #[clap(arg_enum)]
+        #[arg(value_enum)]
         shell: clap_complete_command::Shell,
     },
 }
@@ -44,7 +44,7 @@ fn main() {
 ```rust
 use clap::{Arg, Command};
 
-fn build_cli() -> Command<'static> {
+fn build_cli() -> Command {
     Command::new(env!("CARGO_PKG_NAME"))
         .subcommand_required(true)
         .subcommand(
@@ -55,7 +55,9 @@ fn build_cli() -> Command<'static> {
                         .value_name("SHELL")
                         .help("The shell to generate the completions for")
                         .required(true)
-                        .possible_values(clap_complete_command::Shell::possible_values()),
+                        .value_parser(
+                            clap::builder::EnumValueParser::<clap_complete_command::Shell>::new(),
+                        ),
                 ),
         )
 }
@@ -66,7 +68,7 @@ fn main() {
     match matches.subcommand() {
         Some(("completions", sub_matches)) => {
             // e.g. `$ cli completions bash`
-            if let Ok(shell) = sub_matches.value_of_t::<clap_complete_command::Shell>("shell") {
+            if let Some(shell) = sub_matches.get_one::<clap_complete_command::Shell>("shell") {
                 let mut command = build_cli();
                 shell.generate(&mut command, &mut std::io::stdout());
             }

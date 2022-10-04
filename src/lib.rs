@@ -138,7 +138,7 @@ use clap::ValueEnum;
 /// #[derive(Subcommand)]
 /// enum Commands {
 ///     Completions {
-///         #[clap(value_enum)]
+///         #[arg(value_enum)]
 ///         shell: clap_complete_command::Shell,
 ///     },
 /// }
