@@ -3,11 +3,11 @@
 //! ## Derive
 //!
 //! ```no_run
-//! use clap::{IntoApp, Parser, Subcommand};
+//! use clap::{CommandFactory, Parser, Subcommand};
 //!
 //! #[derive(Parser)]
 //! struct Cli {
-//!     #[clap(subcommand)]
+//!     #[command(subcommand)]
 //!     command: Commands,
 //! }
 //!
@@ -16,7 +16,7 @@
 //!     /// Generate shell completions
 //!     Completions {
 //!         /// The shell to generate the completions for
-//!         #[clap(arg_enum)]
+//!         #[arg(value_enum)]
 //!         shell: clap_complete_command::Shell,
 //!     },
 //! }
@@ -36,7 +36,7 @@
 //! ```no_run
 //! use clap::{Arg, Command};
 //!
-//! fn build_cli() -> Command<'static> {
+//! fn build_cli() -> Command {
 //!     Command::new(env!("CARGO_PKG_NAME"))
 //!         .subcommand_required(true)
 //!         .subcommand(
@@ -47,7 +47,9 @@
 //!                         .value_name("SHELL")
 //!                         .help("The shell to generate the completions for")
 //!                         .required(true)
-//!                         .possible_values(clap_complete_command::Shell::possible_values()),
+//!                         .value_parser(
+//!                             clap::builder::EnumValueParser::<clap_complete_command::Shell>::new(),
+//!                         ),
 //!                 ),
 //!         )
 //! }
@@ -57,7 +59,7 @@
 //! match matches.subcommand() {
 //!     Some(("completions", sub_matches)) => {
 //!         // e.g. `$ cli completions bash`
-//!         if let Ok(shell) = sub_matches.value_of_t::<clap_complete_command::Shell>("shell") {
+//!         if let Some(shell) = sub_matches.get_one::<clap_complete_command::Shell>("shell") {
 //!             let mut command = build_cli();
 //!             shell.generate(&mut command, &mut std::io::stdout());
 //!         }
@@ -114,11 +116,11 @@
 #![warn(clippy::wildcard_imports)]
 #![warn(clippy::zero_sized_map_values)]
 
-use std::{ffi::OsString, path::PathBuf, str::FromStr};
+use std::{ffi::OsString, path::PathBuf};
 
-use clap::ArgEnum;
+use clap::ValueEnum;
 
-/// A [`clap::ArgEnum`] for available shell completions.
+/// A [`clap::ValueEnum`] for available shell completions.
 ///
 /// # Examples
 ///
@@ -129,14 +131,14 @@ use clap::ArgEnum;
 ///
 /// #[derive(Parser)]
 /// struct Cli {
-///     #[clap(subcommand)]
+///     #[command(subcommand)]
 ///     command: Commands,
 /// }
 ///
 /// #[derive(Subcommand)]
 /// enum Commands {
 ///     Completions {
-///         #[clap(arg_enum)]
+///         #[arg(value_enum)]
 ///         shell: clap_complete_command::Shell,
 ///     },
 /// }
@@ -147,7 +149,7 @@ use clap::ArgEnum;
 /// ```no_run
 /// use clap::{Arg, Command};
 ///
-/// fn build_cli() -> Command<'static> {
+/// fn build_cli() -> Command {
 ///     Command::new(env!("CARGO_PKG_NAME"))
 ///         .subcommand_required(true)
 ///         .subcommand(
@@ -158,7 +160,9 @@ use clap::ArgEnum;
 ///                         .value_name("SHELL")
 ///                         .help("The shell to generate the completions for")
 ///                         .required(true)
-///                         .possible_values(clap_complete_command::Shell::possible_values()),
+///                         .value_parser(
+///                             clap::builder::EnumValueParser::<clap_complete_command::Shell>::new(),
+///                         ),
 ///                 ),
 ///         )
 /// }
@@ -167,7 +171,7 @@ use clap::ArgEnum;
 ///
 /// match matches.subcommand() {
 ///     Some(("completions", sub_matches)) => {
-///         if let Ok(shell) = sub_matches.value_of_t::<clap_complete_command::Shell>("shell") {
+///         if let Some(shell) = sub_matches.get_one::<clap_complete_command::Shell>("shell") {
 ///             // ...
 ///         }
 ///     }
@@ -176,7 +180,7 @@ use clap::ArgEnum;
 ///     }
 /// }
 /// ```
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 #[non_exhaustive]
 pub enum Shell {
     /// Bourne Again SHell (bash)
@@ -250,48 +254,10 @@ impl Shell {
             .to_owned();
         clap_complete::generate_to(self, command, bin_name, out_dir)
     }
-
-    /// # Examples
-    ///
-    /// ```no_run
-    /// use clap::{Arg, Command};
-    ///
-    /// Command::new("completions")
-    ///     .about("Generate shell completions")
-    ///     .arg(
-    ///         Arg::new("shell")
-    ///             .value_name("SHELL")
-    ///             .help("The shell to generate the completions for")
-    ///             .required(true)
-    ///             .possible_values(clap_complete_command::Shell::possible_values()),
-    ///     )
-    ///     .get_matches()
-    /// # ;
-    /// ```
-    pub fn possible_values() -> impl Iterator<Item = clap::PossibleValue<'static>> {
-        Self::value_variants()
-            .iter()
-            .filter_map(ArgEnum::to_possible_value)
-    }
 }
 
-// Used for builder API
-impl FromStr for Shell {
-    type Err = String;
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        for variant in Self::value_variants() {
-            if variant.to_possible_value().unwrap().matches(s, false) {
-                return Ok(*variant);
-            }
-        }
-        Err(format!("invalid variant: {}", s))
-    }
-}
-
-// Used for derive API
 // Hand-rolled to avoid depending on Clap's `derive` feature
-impl ArgEnum for Shell {
+impl ValueEnum for Shell {
     fn value_variants<'a>() -> &'a [Self] {
         &[
             Self::Bash,
@@ -303,14 +269,14 @@ impl ArgEnum for Shell {
         ]
     }
 
-    fn to_possible_value<'a>(&self) -> Option<clap::PossibleValue<'a>> {
+    fn to_possible_value(&self) -> Option<clap::builder::PossibleValue> {
         Some(match self {
-            Self::Bash => clap::PossibleValue::new("bash"),
-            Self::Elvish => clap::PossibleValue::new("elvish"),
-            Self::Fig => clap::PossibleValue::new("fig"),
-            Self::Fish => clap::PossibleValue::new("fish"),
-            Self::PowerShell => clap::PossibleValue::new("powershell"),
-            Self::Zsh => clap::PossibleValue::new("zsh"),
+            Self::Bash => clap::builder::PossibleValue::new("bash"),
+            Self::Elvish => clap::builder::PossibleValue::new("elvish"),
+            Self::Fig => clap::builder::PossibleValue::new("fig"),
+            Self::Fish => clap::builder::PossibleValue::new("fish"),
+            Self::PowerShell => clap::builder::PossibleValue::new("powershell"),
+            Self::Zsh => clap::builder::PossibleValue::new("zsh"),
         })
     }
 }
@@ -318,7 +284,7 @@ impl ArgEnum for Shell {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use clap::ArgEnum;
+    use clap::ValueEnum;
 
     #[test]
     fn check_casing_bash() {
@@ -355,7 +321,7 @@ mod tests {
     fn check_order() {
         let names = Shell::value_variants()
             .iter()
-            .map(|shell| shell.to_possible_value().unwrap().get_name())
+            .map(|shell| shell.to_possible_value().unwrap().get_name().to_owned())
             .collect::<Vec<_>>();
 
         let mut sorted = names.clone();

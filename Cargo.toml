@@ -11,9 +11,9 @@ keywords = ["clap", "cli", "completion"]
 categories = ["command-line-interface"]
 
 [dependencies]
-clap = "3"
-clap_complete = "3"
-clap_complete_fig = "3"
+clap = "4"
+clap_complete = "4"
+clap_complete_fig = "4"
 
 [dev-dependencies]
-clap = { version = "3", features = ["derive"] }
+clap = { version = "4", features = ["derive"] }
