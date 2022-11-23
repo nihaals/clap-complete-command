@@ -10,10 +10,15 @@ license = "MIT"
 keywords = ["clap", "cli", "completion"]
 categories = ["command-line-interface"]
 
+[features]
+man-page = ["dep:clap_mangen"]
+
 [dependencies]
 clap = "4"
 clap_complete = "4"
 clap_complete_fig = "4"
+
+clap_mangen = { version = "0.2", optional = true }
 
 [dev-dependencies]
 clap = { version = "4", features = ["derive"] }

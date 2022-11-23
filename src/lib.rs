@@ -191,6 +191,9 @@ pub enum Shell {
     Fig,
     /// Friendly Interactive SHell (fish)
     Fish,
+    /// Man page
+    #[cfg(feature = "man-page")]
+    ManPage,
     /// PowerShell
     PowerShell,
     /// Z SHell (zsh)
@@ -207,6 +210,9 @@ impl clap_complete::Generator for Shell {
             Self::Zsh => clap_complete::Shell::Zsh.file_name(name),
 
             Self::Fig => clap_complete_fig::Fig.file_name(name),
+
+            #[cfg(feature = "man-page")]
+            Self::ManPage => format!("{}.1", name),
         }
     }
 
@@ -219,6 +225,9 @@ impl clap_complete::Generator for Shell {
             Self::Zsh => clap_complete::Shell::Zsh.generate(cmd, buf),
 
             Self::Fig => clap_complete_fig::Fig.generate(cmd, buf),
+
+            #[cfg(feature = "man-page")]
+            Self::ManPage => clap_mangen::Man::new(cmd.clone()).render(buf).unwrap(),
         }
     }
 }
@@ -264,6 +273,8 @@ impl ValueEnum for Shell {
             Self::Elvish,
             Self::Fig,
             Self::Fish,
+            #[cfg(feature = "man-page")]
+            Self::ManPage,
             Self::PowerShell,
             Self::Zsh,
         ]
@@ -275,6 +286,8 @@ impl ValueEnum for Shell {
             Self::Elvish => clap::builder::PossibleValue::new("elvish"),
             Self::Fig => clap::builder::PossibleValue::new("fig"),
             Self::Fish => clap::builder::PossibleValue::new("fish"),
+            #[cfg(feature = "man-page")]
+            Self::ManPage => clap::builder::PossibleValue::new("man"),
             Self::PowerShell => clap::builder::PossibleValue::new("powershell"),
             Self::Zsh => clap::builder::PossibleValue::new("zsh"),
         })
@@ -287,37 +300,6 @@ mod tests {
     use clap::ValueEnum;
 
     #[test]
-    fn check_casing_bash() {
-        assert_eq!(Shell::Bash.to_possible_value().unwrap().get_name(), "bash");
-    }
-    #[test]
-    fn check_casing_elvish() {
-        assert_eq!(
-            Shell::Elvish.to_possible_value().unwrap().get_name(),
-            "elvish",
-        );
-    }
-    #[test]
-    fn check_casing_fig() {
-        assert_eq!(Shell::Fig.to_possible_value().unwrap().get_name(), "fig");
-    }
-    #[test]
-    fn check_casing_fish() {
-        assert_eq!(Shell::Fish.to_possible_value().unwrap().get_name(), "fish");
-    }
-    #[test]
-    fn check_casing_powershell() {
-        assert_eq!(
-            Shell::PowerShell.to_possible_value().unwrap().get_name(),
-            "powershell",
-        );
-    }
-    #[test]
-    fn check_casing_zsh() {
-        assert_eq!(Shell::Zsh.to_possible_value().unwrap().get_name(), "zsh");
-    }
-
-    #[test]
     fn check_order() {
         let names = Shell::value_variants()
             .iter()
@@ -328,9 +310,17 @@ mod tests {
         sorted.sort_unstable();
 
         assert_eq!(names, sorted);
-        assert_eq!(
-            names,
-            vec!["bash", "elvish", "fig", "fish", "powershell", "zsh"],
-        );
+
+        if cfg!(feature = "man-page") {
+            assert_eq!(
+                names,
+                vec!["bash", "elvish", "fig", "fish", "man", "powershell", "zsh"],
+            );
+        } else {
+            assert_eq!(
+                names,
+                vec!["bash", "elvish", "fig", "fish", "powershell", "zsh"],
+            );
+        }
     }
 }
