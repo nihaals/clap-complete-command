@@ -10,10 +10,15 @@ license = "MIT"
 keywords = ["clap", "cli", "completion"]
 categories = ["command-line-interface"]
 
+[features]
+default = ["fig"]
+fig = ["dep:clap_complete_fig"]
+
 [dependencies]
 clap = "4"
 clap_complete = "4"
-clap_complete_fig = "4"
+
+clap_complete_fig = { version = "4", optional = true }
 
 [dev-dependencies]
 clap = { version = "4", features = ["derive"] }

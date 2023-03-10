@@ -188,6 +188,7 @@ pub enum Shell {
     /// Elvish shell
     Elvish,
     /// Fig
+    #[cfg(feature = "fig")]
     Fig,
     /// Friendly Interactive SHell (fish)
     Fish,
@@ -206,6 +207,7 @@ impl clap_complete::Generator for Shell {
             Self::PowerShell => clap_complete::Shell::PowerShell.file_name(name),
             Self::Zsh => clap_complete::Shell::Zsh.file_name(name),
 
+            #[cfg(feature = "fig")]
             Self::Fig => clap_complete_fig::Fig.file_name(name),
         }
     }
@@ -218,6 +220,7 @@ impl clap_complete::Generator for Shell {
             Self::PowerShell => clap_complete::Shell::PowerShell.generate(cmd, buf),
             Self::Zsh => clap_complete::Shell::Zsh.generate(cmd, buf),
 
+            #[cfg(feature = "fig")]
             Self::Fig => clap_complete_fig::Fig.generate(cmd, buf),
         }
     }
@@ -262,6 +265,7 @@ impl ValueEnum for Shell {
         &[
             Self::Bash,
             Self::Elvish,
+            #[cfg(feature = "fig")]
             Self::Fig,
             Self::Fish,
             Self::PowerShell,
@@ -273,6 +277,7 @@ impl ValueEnum for Shell {
         Some(match self {
             Self::Bash => clap::builder::PossibleValue::new("bash"),
             Self::Elvish => clap::builder::PossibleValue::new("elvish"),
+            #[cfg(feature = "fig")]
             Self::Fig => clap::builder::PossibleValue::new("fig"),
             Self::Fish => clap::builder::PossibleValue::new("fish"),
             Self::PowerShell => clap::builder::PossibleValue::new("powershell"),
@@ -298,6 +303,7 @@ mod tests {
         );
     }
     #[test]
+    #[cfg(feature = "fig")]
     fn check_casing_fig() {
         assert_eq!(Shell::Fig.to_possible_value().unwrap().get_name(), "fig");
     }
@@ -328,9 +334,20 @@ mod tests {
         sorted.sort_unstable();
 
         assert_eq!(names, sorted);
-        assert_eq!(
-            names,
-            vec!["bash", "elvish", "fig", "fish", "powershell", "zsh"],
-        );
+
+        let correct_order = [
+            ("bash", true),
+            ("elvish", true),
+            ("fig", cfg!(feature = "fig")),
+            ("fish", true),
+            ("powershell", true),
+            ("zsh", true),
+        ]
+        .iter()
+        .filter(|(_, enabled)| *enabled)
+        .map(|(shell, _)| *shell)
+        .collect::<Vec<_>>();
+
+        assert_eq!(names, correct_order);
     }
 }
