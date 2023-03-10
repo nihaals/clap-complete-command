@@ -12,6 +12,7 @@ categories = ["command-line-interface"]
 
 [features]
 default = ["fig", "nushell"]
+carapace = ["dep:carapace_spec_clap"]
 fig = ["dep:clap_complete_fig"]
 nushell = ["dep:clap_complete_nushell"]
 
@@ -19,6 +20,7 @@ nushell = ["dep:clap_complete_nushell"]
 clap = "4"
 clap_complete = "4"
 
+carapace_spec_clap = { version = "0.1", optional = true }
 clap_complete_fig = { version = "4", optional = true }
 clap_complete_nushell = { version = "0.1", optional = true }
 

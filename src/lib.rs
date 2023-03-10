@@ -185,6 +185,9 @@ use clap::ValueEnum;
 pub enum Shell {
     /// Bourne Again SHell (bash)
     Bash,
+    /// Carapace spec
+    #[cfg(feature = "carapace")]
+    Carapace,
     /// Elvish shell
     Elvish,
     /// Fig
@@ -210,6 +213,8 @@ impl clap_complete::Generator for Shell {
             Self::PowerShell => clap_complete::Shell::PowerShell.file_name(name),
             Self::Zsh => clap_complete::Shell::Zsh.file_name(name),
 
+            #[cfg(feature = "carapace")]
+            Self::Carapace => carapace_spec_clap::Spec.file_name(name),
             #[cfg(feature = "fig")]
             Self::Fig => clap_complete_fig::Fig.file_name(name),
             #[cfg(feature = "nushell")]
@@ -225,6 +230,8 @@ impl clap_complete::Generator for Shell {
             Self::PowerShell => clap_complete::Shell::PowerShell.generate(cmd, buf),
             Self::Zsh => clap_complete::Shell::Zsh.generate(cmd, buf),
 
+            #[cfg(feature = "carapace")]
+            Self::Carapace => carapace_spec_clap::Spec.generate(cmd, buf),
             #[cfg(feature = "fig")]
             Self::Fig => clap_complete_fig::Fig.generate(cmd, buf),
             #[cfg(feature = "nushell")]
@@ -271,6 +278,8 @@ impl ValueEnum for Shell {
     fn value_variants<'a>() -> &'a [Self] {
         &[
             Self::Bash,
+            #[cfg(feature = "carapace")]
+            Self::Carapace,
             Self::Elvish,
             #[cfg(feature = "fig")]
             Self::Fig,
@@ -285,6 +294,8 @@ impl ValueEnum for Shell {
     fn to_possible_value(&self) -> Option<clap::builder::PossibleValue> {
         Some(match self {
             Self::Bash => clap::builder::PossibleValue::new("bash"),
+            #[cfg(feature = "carapace")]
+            Self::Carapace => clap::builder::PossibleValue::new("carapace"),
             Self::Elvish => clap::builder::PossibleValue::new("elvish"),
             #[cfg(feature = "fig")]
             Self::Fig => clap::builder::PossibleValue::new("fig"),
@@ -305,6 +316,14 @@ mod tests {
     #[test]
     fn check_casing_bash() {
         assert_eq!(Shell::Bash.to_possible_value().unwrap().get_name(), "bash");
+    }
+    #[test]
+    #[cfg(feature = "carapace")]
+    fn check_casing_carapace() {
+        assert_eq!(
+            Shell::Carapace.to_possible_value().unwrap().get_name(),
+            "carapace"
+        );
     }
     #[test]
     fn check_casing_elvish() {
@@ -353,6 +372,7 @@ mod tests {
 
         let correct_order = [
             ("bash", true),
+            ("carapace", cfg!(feature = "carapace")),
             ("elvish", true),
             ("fig", cfg!(feature = "fig")),
             ("fish", true),
