@@ -70,6 +70,8 @@
 //! }
 //! ```
 
+#![cfg_attr(docsrs, feature(doc_auto_cfg))]
+
 #![warn(clippy::cast_lossless)]
 #![warn(clippy::cast_possible_wrap)]
 #![warn(clippy::default_trait_access)]
