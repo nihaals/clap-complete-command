@@ -192,6 +192,9 @@ pub enum Shell {
     Fig,
     /// Friendly Interactive SHell (fish)
     Fish,
+    /// NUshell (nu)
+    #[cfg(feature = "nushell")]
+    Nu,
     /// PowerShell
     PowerShell,
     /// Z SHell (zsh)
@@ -209,6 +212,8 @@ impl clap_complete::Generator for Shell {
 
             #[cfg(feature = "fig")]
             Self::Fig => clap_complete_fig::Fig.file_name(name),
+            #[cfg(feature = "nushell")]
+            Self::Nu => clap_complete_nushell::Nushell.file_name(name),
         }
     }
 
@@ -222,6 +227,8 @@ impl clap_complete::Generator for Shell {
 
             #[cfg(feature = "fig")]
             Self::Fig => clap_complete_fig::Fig.generate(cmd, buf),
+            #[cfg(feature = "nushell")]
+            Self::Nu => clap_complete_nushell::Nushell.generate(cmd, buf),
         }
     }
 }
@@ -268,6 +275,8 @@ impl ValueEnum for Shell {
             #[cfg(feature = "fig")]
             Self::Fig,
             Self::Fish,
+            #[cfg(feature = "nushell")]
+            Self::Nu,
             Self::PowerShell,
             Self::Zsh,
         ]
@@ -280,6 +289,8 @@ impl ValueEnum for Shell {
             #[cfg(feature = "fig")]
             Self::Fig => clap::builder::PossibleValue::new("fig"),
             Self::Fish => clap::builder::PossibleValue::new("fish"),
+            #[cfg(feature = "nushell")]
+            Self::Nu => clap::builder::PossibleValue::new("nushell"),
             Self::PowerShell => clap::builder::PossibleValue::new("powershell"),
             Self::Zsh => clap::builder::PossibleValue::new("zsh"),
         })
@@ -312,6 +323,11 @@ mod tests {
         assert_eq!(Shell::Fish.to_possible_value().unwrap().get_name(), "fish");
     }
     #[test]
+    #[cfg(feature = "nushell")]
+    fn check_casing_nushell() {
+        assert_eq!(Shell::Nu.to_possible_value().unwrap().get_name(), "nushell");
+    }
+    #[test]
     fn check_casing_powershell() {
         assert_eq!(
             Shell::PowerShell.to_possible_value().unwrap().get_name(),
@@ -340,6 +356,7 @@ mod tests {
             ("elvish", true),
             ("fig", cfg!(feature = "fig")),
             ("fish", true),
+            ("nushell", cfg!(feature = "nushell")),
             ("powershell", true),
             ("zsh", true),
         ]
