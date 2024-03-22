@@ -315,50 +315,26 @@ mod tests {
     use super::*;
     use clap::ValueEnum;
 
-    #[test]
-    fn check_casing_bash() {
-        assert_eq!(Shell::Bash.to_possible_value().unwrap().get_name(), "bash");
+    macro_rules! check_shell_value_test {
+        ($test_name:ident, $shell:expr, $value:expr) => {
+            #[test]
+            fn $test_name() {
+                assert_eq!($shell.to_possible_value().unwrap().get_name(), $value);
+            }
+        };
     }
-    #[test]
+
+    check_shell_value_test!(test_shell_value_bash, Shell::Bash, "bash");
     #[cfg(feature = "carapace")]
-    fn check_casing_carapace() {
-        assert_eq!(
-            Shell::Carapace.to_possible_value().unwrap().get_name(),
-            "carapace"
-        );
-    }
-    #[test]
-    fn check_casing_elvish() {
-        assert_eq!(
-            Shell::Elvish.to_possible_value().unwrap().get_name(),
-            "elvish",
-        );
-    }
-    #[test]
+    check_shell_value_test!(test_shell_value_carapace, Shell::Carapace, "carapace");
+    check_shell_value_test!(test_shell_value_elvish, Shell::Elvish, "elvish");
     #[cfg(feature = "fig")]
-    fn check_casing_fig() {
-        assert_eq!(Shell::Fig.to_possible_value().unwrap().get_name(), "fig");
-    }
-    #[test]
-    fn check_casing_fish() {
-        assert_eq!(Shell::Fish.to_possible_value().unwrap().get_name(), "fish");
-    }
-    #[test]
+    check_shell_value_test!(test_shell_value_fig, Shell::Fig, "fig");
+    check_shell_value_test!(test_shell_value_fish, Shell::Fish, "fish");
     #[cfg(feature = "nushell")]
-    fn check_casing_nushell() {
-        assert_eq!(Shell::Nu.to_possible_value().unwrap().get_name(), "nushell");
-    }
-    #[test]
-    fn check_casing_powershell() {
-        assert_eq!(
-            Shell::PowerShell.to_possible_value().unwrap().get_name(),
-            "powershell",
-        );
-    }
-    #[test]
-    fn check_casing_zsh() {
-        assert_eq!(Shell::Zsh.to_possible_value().unwrap().get_name(), "zsh");
-    }
+    check_shell_value_test!(test_shell_value_nushell, Shell::Nu, "nushell");
+    check_shell_value_test!(test_shell_value_powershell, Shell::PowerShell, "powershell");
+    check_shell_value_test!(test_shell_value_zsh, Shell::Zsh, "zsh");
 
     #[test]
     fn check_order() {
