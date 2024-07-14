@@ -20,9 +20,9 @@ nushell = ["dep:clap_complete_nushell"]
 clap = "4"
 clap_complete = "4"
 
-carapace_spec_clap = { version = "0.1", optional = true }
+carapace_spec_clap = { version = "1", optional = true }
 clap_complete_fig = { version = "4", optional = true }
-clap_complete_nushell = { version = "0.1", optional = true }
+clap_complete_nushell = { version = "4", optional = true }
 
 [dev-dependencies]
 clap = { version = "4", features = ["derive"] }
