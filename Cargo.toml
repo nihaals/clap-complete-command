@@ -11,7 +11,7 @@ keywords = ["clap", "cli", "completion"]
 categories = ["command-line-interface"]
 
 [features]
-default = ["fig", "nushell"]
+default = ["nushell"]
 carapace = ["dep:carapace_spec_clap"]
 fig = ["dep:clap_complete_fig"]
 nushell = ["dep:clap_complete_nushell"]
