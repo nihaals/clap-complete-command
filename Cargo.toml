@@ -9,6 +9,7 @@ documentation = "https://docs.rs/clap_complete_command"
 license = "MIT"
 keywords = ["clap", "cli", "completion"]
 categories = ["command-line-interface"]
+include = ["/src/", "/examples/", "/LICENSE"]
 
 [features]
 default = ["nushell"]
